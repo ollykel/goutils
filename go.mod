@@ -1,1 +1,1 @@
-module goutils
+module github.com/ollykel/goutils
