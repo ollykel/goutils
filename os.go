@@ -16,11 +16,11 @@ import (
 // executable name
 // Returns "" if no executable found
 func Which (executable string) (path string) {
-	paths := strings.Split(os.Getenv("PATH"), os.PathListSeparator)
+	paths := strings.Split(os.Getenv("PATH"), string(os.PathListSeparator))
 	for _, p := range paths {
-		path = os.PathSeparator + fpath.Join(p, executable)
+		path = fpath.Join(p, executable)
 		_, err := os.Stat(path)
-		if err != nil { return }
+		if err == nil { return }
 	}//-- end for range paths
 	return ""
 }//-- end func Which
