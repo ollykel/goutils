@@ -15,6 +15,6 @@ import (
 func PrintJSON (dest io.Writer, src interface{}) {
 	enc := json.NewEncoder(dest)
 	enc.SetIndent("", "  ")
-	if err := enc.Encode(dest); err != nil { log.Panic(err) }
+	if err := enc.Encode(src); err != nil { log.Panic(err) }
 }
 
