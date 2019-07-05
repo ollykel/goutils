@@ -8,6 +8,7 @@ package goutils
 
 import (
 	"os"
+	"fmt"
 	"strings"
 	fpath "path/filepath"
 )
@@ -24,4 +25,18 @@ func Which (executable string) (path string) {
 	}//-- end for range paths
 	return ""
 }//-- end func Which
+
+func Call (exec string, args []string, attr *os.ProcAttr) (proc *os.Process, err error) {
+	path := Which(exec); if path == "" {
+		return nil, fmt.Errorf("program '%s' not found", exec)
+	}
+	if attr == nil {
+		defAttr := os.ProcAttr{Files: []*os.File{os.Stdin, os.Stdout, os.Stderr}}
+		attr = &defAttr
+	}
+	argv := make([]string, len(args) + 1)
+	argv[0] = path
+	copy(argv[1:], args)
+	return os.StartProcess(path, argv, attr)
+}//-- end func Call
 
