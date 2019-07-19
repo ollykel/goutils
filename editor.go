@@ -43,6 +43,7 @@ func EditFile (f *os.File, cfg *EditorConfig) (err error) {
 
 func Edit (init []byte, cfg *EditorConfig) (output []byte, err error) {
 	tmp, err := ioutil.TempFile("", "goedit_*.txt"); if err != nil { return }
+	fName := tmp.Name()
 	defer tmp.Close(); defer os.Remove(fName)
 	tmp.Write(init)
 	err = EditFile(tmp, cfg); if err != nil { return }
