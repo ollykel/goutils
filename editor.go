@@ -27,21 +27,25 @@ func getEditor (def string) (path string) {
 	return
 }
 
-func Edit (init []byte, cfg *EditorConfig) (output []byte, err error) {
-	tmp, err := ioutil.TempFile("", "goedit_*.txt"); if err != nil { return }
-	fName := tmp.Name()
-	defer tmp.Close(); defer os.Remove(fName)
-	tmp.Write(init)
+func EditFile (f *os.File, cfg *EditorConfig) (err error) {
 	editor := Which(cfg.Name); if editor == "" {
-		return nil, fmt.Errorf("unrecognized editor '%s'", cfg.Name)
+		return fmt.Errorf("unrecognized editor '%s'", cfg.Name)
 	}
 	argv := make([]string, len(cfg.Flags) + 2)
-	argv[0], argv[1] = cfg.Name, fName
+	argv[0], argv[1] = cfg.Name, f.Name()
 	copy(argv[2:], cfg.Flags)
 	proc, err := os.StartProcess(editor, argv,
 		&os.ProcAttr{Files: []*os.File{os.Stdin, os.Stdout, os.Stderr}})
 	if err != nil { return }
-	_, err = proc.Wait(); if err != nil { return }
+	_, err = proc.Wait()
+	return
+}//-- end func EditFile
+
+func Edit (init []byte, cfg *EditorConfig) (output []byte, err error) {
+	tmp, err := ioutil.TempFile("", "goedit_*.txt"); if err != nil { return }
+	defer tmp.Close(); defer os.Remove(fName)
+	tmp.Write(init)
+	err = EditFile(tmp, cfg); if err != nil { return }
 	tmp.Seek(0, os.SEEK_SET)
 	output, err = ioutil.ReadAll(tmp); if err != nil { return }
 	return
