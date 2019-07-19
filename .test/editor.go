@@ -3,10 +3,9 @@
  * @author Oliver Kelton, oakelton@gmail.com
  * @date Jul 19, 2019
  */
-package .test
+package main
 
 import (
-	"os"
 	"fmt"
 	"log"
 

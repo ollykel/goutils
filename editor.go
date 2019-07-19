@@ -36,9 +36,8 @@ func Edit (init []byte, cfg *EditorConfig) (output []byte, err error) {
 		return nil, fmt.Errorf("unrecognized editor '%s'", cfg.Name)
 	}
 	argv := make([]string, len(cfg.Flags) + 2)
-	argv[0] = cfg.Name
-	copy(argv[1:], cfg.Flags)
-	argv[len(argv) - 1] = tmp.Name()
+	argv[0], argv[1] = cfg.Name, fName
+	copy(argv[2:], cfg.Flags)
 	proc, err := os.StartProcess(editor, argv,
 		&os.ProcAttr{Files: []*os.File{os.Stdin, os.Stdout, os.Stderr}})
 	if err != nil { return }
