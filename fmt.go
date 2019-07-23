@@ -21,7 +21,7 @@ func PrintJSON (dest io.Writer, src interface{}) {
 // orig: original string with varnames included
 // demarc: character that demarcs the beginning of a variable name
 // vars: mapping of variable names to values
-func ParseVars (orig string, demarc byte, vars map[string]string) (parsed string) {
+func ParseVars (demarc byte, vars map[string]string, orig ...string) (parsed []string) {
 	pairs := make([]string, 0, len(vars) * 2)
 	for k, v := range vars {
 		varName := make([]rune, len(k) + 1)
@@ -29,6 +29,11 @@ func ParseVars (orig string, demarc byte, vars map[string]string) (parsed string
 		copy(varName[1:], []rune(k))
 		pairs = append(pairs, string(varName), v)
 	}//-- end for k, v
-	return strings.NewReplacer(pairs...).Replace(orig)
+	rep := strings.NewReplacer(pairs...)
+	parsed = make([]string, len(orig))
+	for i, s := range orig {
+		parsed[i] = rep.Replace(s)
+	}//-- end for range orig
+	return
 }
 
