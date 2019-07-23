@@ -8,7 +8,7 @@ package goutils
 import (
 	"io"
 	"log"
-
+	"strings"
 	"encoding/json"
 )
 
@@ -16,5 +16,19 @@ func PrintJSON (dest io.Writer, src interface{}) {
 	enc := json.NewEncoder(dest)
 	enc.SetIndent("", "  ")
 	if err := enc.Encode(src); err != nil { log.Panic(err) }
+}
+
+// orig: original string with varnames included
+// demarc: character that demarcs the beginning of a variable name
+// vars: mapping of variable names to values
+func ParseVars (orig string, demarc byte, vars map[string]string) (parsed string) {
+	pairs := make([]string, 0, len(vars) * 2)
+	for k, v := range vars {
+		varName := make([]rune, len(k) + 1)
+		varName[0] = rune(demarc)
+		copy(varName[1:], []rune(k))
+		pairs = append(pairs, string(varName), v)
+	}//-- end for k, v
+	return strings.NewReplacer(pairs...).Replace(orig)
 }
 
