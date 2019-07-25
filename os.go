@@ -26,6 +26,11 @@ func Which (executable string) (path string) {
 	return ""
 }//-- end func Which
 
+func FileExists (fname string) bool {
+	_, err := os.Stat(fname)
+	return err == nil
+}
+
 func Call (exec string, args []string, attr *os.ProcAttr) (proc *os.Process, err error) {
 	path := Which(exec); if path == "" {
 		return nil, fmt.Errorf("program '%s' not found", exec)
