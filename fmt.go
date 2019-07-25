@@ -10,6 +10,7 @@ import (
 	"log"
 	"strings"
 	"encoding/json"
+	"time"
 )
 
 func PrintJSON (dest io.Writer, src interface{}) {
@@ -84,4 +85,9 @@ func (rep *Replacer) Remap (mapper func(string)string) (self *Replacer) {
 func (rep *Replacer) Replace (orig string) string {
 	return rep.rep.Replace(orig)
 }//-- end func Replacer.Replace
+
+func DisplayMsg (dest io.Writer, msg string, msecs int) {
+	dest.Write([]byte(msg))
+	time.Sleep(time.Duration(msecs) * time.Millisecond)
+}
 
